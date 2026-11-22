@@ -1,10 +1,46 @@
-seed = 0
-sizes = [1024, 65536, 1048576]
+[project]
+name = "can-anything-beat-c"
+presentation = "2026-12-09"
+all_devices_measured_by = "2026-12-01"
+baseline = "c"                      # score 1.0, everything else relative to it
 
-[flags]
-c = ["-O3"]
-cpp = ["-O3"]
-rust = ["-C", "opt-level=3"]
-zig = ["-OReleaseFast"]
-go = []
-goose = []
+[toolchain]                         # everyone must match these
+zig = "0.17.1"
+goose_commit = "PASTE-HASH-FROM-devices/mint-pc.md"
+c_compiler_family = "gcc"           # same family for C, C++ and Goose on each device
+windows_cc = "mingw-gcc"            # proposed, confirm with friend
+
+[run]
+warmups = 3                         # hyperfine --warmup
+min_runs = 10                       # hyperfine --runs
+march_native = false                # optional extra run only, labelled
+fast_math = false                   # never
+
+[build]                             # release builds only
+c       = "gcc -O3"                 # MSVC /O2 is not used, see windows_cc
+cpp     = "g++ -O3"
+rust    = "cargo build --release"
+zig     = "zig build-exe -O ReleaseFast"
+go      = "go build"
+goose   = "goose -o X.c --standalone, then gcc -O3 X.c -lm -pthread"
+goose_extra = "goose build"         # -O2, labelled extra row, never the main result
+
+[sort]
+algorithm = "quicksort"             # proposed, confirm with friend
+pivot = "middle element"            # same rule in every language
+element = "i64"
+seed = 12345                        # TBD: pick once, never change
+
+[sizes]                             # TBD: fill after timing the C versions (week 1 rule)
+# nbody_steps       = { small = 0, medium = 0, large = 0 }
+# sort_elements     = { small = 0, medium = 0, large = 0 }
+# binary_trees_depth = { small = 0, medium = 0, large = 0 }
+# hashmap_entries   = { small = 0, medium = 0, large = 0 }
+# mandelbrot_pixels = { small = 0, medium = 0, large = 0 }
+# cross-device comparisons use the largest size every device can run (A5 Ready: 1 GB RAM)
+
+[mandelbrot]
+threads = "TBD per device"          # fixed per device, same for every language
+
+[csv]
+columns = "language,test,size,device,os,run,time_ms,peak_mem_kb,checksum_ok"
