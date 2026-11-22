@@ -1,0 +1,10 @@
+seed = 0
+sizes = [1024, 65536, 1048576]
+
+[flags]
+c = ["-O3"]
+cpp = ["-O3"]
+rust = ["-C", "opt-level=3"]
+zig = ["-OReleaseFast"]
+go = []
+goose = []
