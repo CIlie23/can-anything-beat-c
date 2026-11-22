@@ -1,0 +1,7 @@
+tests/startup/*/startup
+**/target/
+zig-cache/
+.zig-cache/
+*.o
+tests/startup/goose/startup.c
+**/bin/
